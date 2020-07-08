@@ -13,6 +13,7 @@ export function TableRow(props) {
     } else {
       localStorage.setItem('hideList', `${id.toString()}`);
     }
+    props.callHideItem();
   }
 
   // handling vote count click with localStorage  

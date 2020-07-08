@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 // import {mockData} from './testData';
 import {TableRow} from './TableRow';
@@ -6,26 +6,36 @@ import {TableRow} from './TableRow';
 function App(appData) {
   let { data, isServer } = appData || {};
   // data = mockData;
+  let newsArray = data.hits;
+  const [firstRender, setfirstRender] = useState(false);
+  const [newsData, setnewsData] = useState(newsArray || []);
+
   if (isServer ) {
     data = JSON.parse(data);
   }
-  let newsArray = data.hits || [];
   let ChartComponent = "";
 
-  if (!isServer) {
-     // Importing chart component on CSR
-    ChartComponent = React.lazy(() => import('./Chart'));
+  // handling the hide id locally
+  const handleHideClick = () => {
+      let hideList = localStorage.getItem('hideList');
+      if (hideList) {
+        hideList = hideList.split(',');
+        if (firstRender) {
+          debugger;
+          const updatedData = newsData.filter(function(item) {
+            return !hideList.includes(item.objectID); 
+          });
+          setnewsData(updatedData);
+        } else {
+          newsArray = newsArray.filter(function(item) {
+            return !hideList.includes(item.objectID); 
+          });
+        }
+     }
+  }
 
-    // handling the hide id locally
-    let hideList = localStorage.getItem('hideList');
-    if (hideList) {
-      hideList = hideList.split(',');
-      newsArray = newsArray.filter(function(item) {
-        return !hideList.includes(item.objectID); 
-      });
-    }
-
-    // Updating the vote count locally
+  // Updating the vote count locally
+  const voteUpdateLocal = () => {
     let voteCount = localStorage.getItem('voteCount');
     if (voteCount) {
       voteCount = JSON.parse(voteCount);
@@ -35,6 +45,18 @@ function App(appData) {
           points: voteCount[item.objectID] ? voteCount[item.objectID] : item.points
         };
       });
+    }
+  }
+
+  if (!isServer) {
+     // Importing chart component on CSR
+    ChartComponent = React.lazy(() => import('./Chart'));
+
+    if (!firstRender) {
+      handleHideClick();
+      voteUpdateLocal();
+      setnewsData(newsArray);
+      setfirstRender(true);
     }
   }
 
@@ -50,9 +72,9 @@ function App(appData) {
         </tr>
       </thead>
       <tbody>
-        {newsArray.map((row)=> {
+        {newsData.map((row)=> {
           return (
-            <TableRow rowData={row} key={row.objectID} id={row.objectID} />
+            <TableRow rowData={row} key={row.objectID} id={row.objectID} callHideItem={() => handleHideClick()}/>
           )
         })}
       </tbody>
@@ -78,7 +100,7 @@ function App(appData) {
     <hr className="divSplit" />
     {!isServer &&
       <React.Suspense fallback={<div>Loading...</div>}>
-        <ChartComponent newsArray={newsArray} />
+        <ChartComponent newsArray={newsData} />
       </React.Suspense>
     }  
     <hr className="divSplit" />

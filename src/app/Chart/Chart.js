@@ -18,7 +18,7 @@ export function Chart (props) {
     axisY: {
       title: "Votes",
       includeZero: false,
-      interval: 250
+      interval: 100
     },
     axisX: {
       title: "ID",
