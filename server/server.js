@@ -4,12 +4,14 @@ import fs from 'fs';
 import React from 'react';
 import express from 'express';
 import ReactDOMServer from 'react-dom/server';
+import compression from "compression";
 
 import App from '../src/app/App';
 
 const PORT = process.env.PORT || 3006;
 const app = express();
 const fetch = require("node-fetch");
+app.use(compression({ level: 9 }));
 
 
 

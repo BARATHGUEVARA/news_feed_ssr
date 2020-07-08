@@ -1,3 +1,4 @@
+ /* eslint-disable */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -40,6 +41,40 @@ export function register(config) {
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
+        self.addEventListener("install", () => updateCache(indexRequest()));
+
+        self.addEventListener("fetch", event => {
+          const url = new URL(event.request.url);
+          if (isStaticFile(url) || isExternal(url)) {
+            return;
+          }
+          // serve any other request network-first updating cache
+          event.respondWith(
+            fetch(event.request)
+              .then(response => {
+                updateCache(event.request);
+                return response;
+              })
+              .catch(() => caches.match(event.request))
+          );
+        });
+
+        async function updateCache(request) {
+          const cache = await caches.open(`SW-z5-views`);
+          cache.add(request);
+        }
+
+        function indexRequest() {
+          return new Request("/", { credentials: "same-origin" });
+        }
+
+        function isStaticFile({ pathname }) {
+          return pathname.includes(".") && pathname !== "/index.html";
+        }
+
+        function isExternal({ origin }) {
+          return origin !== location.origin;
+        }
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service ' +
@@ -59,6 +94,40 @@ function registerValidSW(swUrl, config) {
     .register(swUrl)
     .then(registration => {
       registration.onupdatefound = () => {
+        self.addEventListener("install", () => updateCache(indexRequest()));
+
+        self.addEventListener("fetch", event => {
+          const url = new URL(event.request.url);
+          if (isStaticFile(url) || isExternal(url)) {
+            return;
+          }
+          // serve any other request network-first updating cache
+          event.respondWith(
+            fetch(event.request)
+              .then(response => {
+                updateCache(event.request);
+                return response;
+              })
+              .catch(() => caches.match(event.request))
+          );
+        });
+
+        async function updateCache(request) {
+          const cache = await caches.open(`SW-z5-views`);
+          cache.add(request);
+        }
+
+        function indexRequest() {
+          return new Request("/", { credentials: "same-origin" });
+        }
+
+        function isStaticFile({ pathname }) {
+          return pathname.includes(".") && pathname !== "/index.html";
+        }
+
+        function isExternal({ origin }) {
+          return origin !== location.origin;
+        }
         const installingWorker = registration.installing;
         if (installingWorker == null) {
           return;
@@ -97,6 +166,7 @@ function registerValidSW(swUrl, config) {
       console.error('Error during service worker registration:', error);
     });
 }
+
 
 function checkValidServiceWorker(swUrl, config) {
   // Check if the service worker can be found. If it can't reload the page.
