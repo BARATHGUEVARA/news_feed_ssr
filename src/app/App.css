@@ -1,0 +1,94 @@
+.app {
+  text-align: center;
+  width: 85%;
+  margin: 10px auto;
+  background-color: rgb(246, 246, 239);
+  height: 100vh;
+  font-size: 10pt;
+}
+
+.newsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: rgb(255, 102, 0);
+}
+
+.newsHeader {
+  text-align: left;
+}
+
+.headerCell {
+  border-spacing: unset;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+tbody>tr:nth-child(even) {
+  background-color: #82828259;
+}
+
+.commentsRow {
+  width: 5%;
+}
+
+.countRow {
+  width: 5%;
+}
+
+.upvoteRow {
+  width: 5%;
+}
+
+.newsRow {
+  text-align: left;
+  font-weight: bold;
+}
+
+.triangleTop {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 4.5px 10px 4.5px;
+  border-color: transparent transparent #aaaaaa transparent;
+  cursor: pointer;
+}
+
+.subText {
+  font-size: 8pt;
+  color: #828282;
+}
+
+.blackFont {
+  color: black;
+  font-weight: bold;
+}
+
+.hideText {
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.prevNext {
+  color: rgb(255, 102, 0);
+  margin-right: 2%;
+  text-align: right;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.divSplit {
+  color: rgb(255, 102, 0);
+  background-color: rgb(255, 102, 0);
+  height: 3px;
+  border-width: 0px;
+  margin: 0;
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
